@@ -4,7 +4,7 @@ import org.apache.spark.sql.Dataset;
 
 public class SimpleApp {
   public static void main(String[] args) {
-    String logFile = "$SPARK_HOME/README.md"; // Should be some file on your system
+    String logFile = "/usr/local/spark-3.0.1-bin-hadoop2.7/README.md"; // Should be some file on your system
     SparkSession spark = SparkSession.builder().appName("Simple Application").getOrCreate();
     Dataset<String> logData = spark.read().textFile(logFile).cache();
 
