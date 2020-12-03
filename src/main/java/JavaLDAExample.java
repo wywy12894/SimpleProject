@@ -2,11 +2,13 @@
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.ml.clustering.LDA;
 import org.apache.spark.ml.clustering.LDAModel;
+import org.apache.spark.ml.stat.Summarizer;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 
 import static org.apache.spark.sql.functions.avg;
+import static org.apache.spark.sql.functions.col;
 // $example off$
 
 /**
@@ -61,7 +63,7 @@ public class JavaLDAExample {
         input.select("topicDistribution").foreach(v->System.out.println(v.getAs("topicDistribution").getClass()));
         input.agg(avg("label")).show();
 
-
+        input.groupBy().agg(Summarizer.mean(col("topicDistribution"))).show();
 
 //        try {
 //            model.write().overwrite().save("/usr/project/SimpleProject/model/LDAmodel2");
