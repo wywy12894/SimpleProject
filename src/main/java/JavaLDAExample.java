@@ -2,12 +2,13 @@
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.ml.clustering.LDA;
 import org.apache.spark.ml.clustering.LDAModel;
+import org.apache.spark.ml.linalg.BLAS;
+import org.apache.spark.ml.linalg.DenseVector;
 import org.apache.spark.ml.linalg.Vector;
 import org.apache.spark.ml.stat.Summarizer;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Encoders;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.*;
+import org.apache.spark.sql.api.java.UDF2;
+import org.apache.spark.sql.types.DataTypes;
 
 import static org.apache.spark.sql.functions.avg;
 import static org.apache.spark.sql.functions.col;
@@ -71,15 +72,19 @@ public class JavaLDAExample {
         table.show();
         table = table.join(input.groupBy().agg(Summarizer.mean(col("topicDistribution"))));
         table.show();
-        table.map(row -> {
-            double v = row.get(row.fieldIndex("topicDistribution"))
-                    .dot(row.get(row.fieldIndex("mean(topicDistribution)")));
-            v = v / Math.sqrt(row.get(row.fieldIndex("topicDistribution"))
-                    .dot(row.get(row.fieldIndex("topicDistribution"))));
-            v = v / Math.sqrt(row.get(row.fieldIndex("mean(topicDistribution)"))
-                    .dot(row.get(row.fieldIndex("mean(topicDistribution)"))));
-            return v;
-        }, Encoders.DOUBLE()).show();
+
+        
+        spark.udf().register("dot_func", (UDF2<DenseVector, DenseVector, Object>) BLAS::dot, DataTypes.DoubleType);
+        table.withColumn("dot",
+                functions.callUDF("dot_func", col("topicDistribution"), col("mean(Distribution)")))
+                .show();
+//        table.map(row -> {
+//            Vector v1 = (DenseVector) row.get(row.fieldIndex("topicDistribution"));
+//            Vector v2 = (DenseVector) row.get(row.fieldIndex("mean(topicDistribution)"));
+//            double v = v1.
+//
+//            return v;
+//        }, Encoders.DOUBLE()).show();
 
 
 
