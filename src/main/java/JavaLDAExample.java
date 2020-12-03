@@ -1,9 +1,9 @@
 // $example on$
+import breeze.linalg.DenseVector;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.ml.clustering.LDA;
 import org.apache.spark.ml.clustering.LDAModel;
 import org.apache.spark.ml.linalg.BLAS;
-import org.apache.spark.ml.linalg.DenseVector;
 import org.apache.spark.ml.linalg.Vector;
 import org.apache.spark.ml.stat.Summarizer;
 import org.apache.spark.sql.*;
@@ -68,15 +68,16 @@ public class JavaLDAExample {
 
         input.groupBy().agg(Summarizer.mean(col("topicDistribution"))).show();
 
-        Dataset<Row> table = transformed.except(input);
+        Dataset<Row> table= transformed.except(input);
         table.show();
         table = table.join(input.groupBy().agg(Summarizer.mean(col("topicDistribution"))));
         table.show();
 
-
-        spark.udf().register("dot_func", (UDF2<DenseVector, DenseVector, Object>) BLAS::dot, DataTypes.DoubleType);
-        table.withColumn("dot",
-                functions.callUDF("dot_func", col("topicDistribution"), col("mean(topicDistribution)")))
+        spark.udf().register("cos_func",
+                (Vector v1, Vector v2)-> BLAS.dot(v1, v2)/(Math.sqrt(BLAS.dot(v1,v1))*Math.sqrt(BLAS.dot(v2,v2))),
+                DataTypes.DoubleType);
+        table.withColumn("cosine",
+                functions.callUDF("cos_func", col("topicDistribution"), col("mean(topicDistribution)")))
                 .show();
 //        table.map(row -> {
 //            Vector v1 = (DenseVector) row.get(row.fieldIndex("topicDistribution"));
