@@ -5,6 +5,8 @@ import org.apache.spark.ml.clustering.LDAModel;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
+
+import static org.apache.spark.sql.functions.avg;
 // $example off$
 
 /**
@@ -57,7 +59,7 @@ public class JavaLDAExample {
         input.show(false);
         input.select("topicDistribution").foreach(v->System.out.println(v.fieldIndex("topicDistribution")));
         input.select("topicDistribution").foreach(v->System.out.println(v.getAs("topicDistribution").getClass()));
-        input.select("topicDistribution").foreach(v->System.out.println((char[]) v.getAs("topicDistribution")));
+        input.agg(avg("topicDistribution")).show();
 
 
 
