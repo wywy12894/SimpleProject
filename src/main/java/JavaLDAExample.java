@@ -56,7 +56,7 @@ public class JavaLDAExample {
                 .load("/usr/project/SimpleProject/data/input.txt");
         input = transformed.join(input, "label");
         input.show(false);
-        input.select("topicDistribution").foreach(System.out::println);
+        input.select("topicDistribution").foreach(v->System.out.println(v.get(1)));
 
 
 
