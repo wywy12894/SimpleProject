@@ -5,6 +5,7 @@ import org.apache.spark.ml.clustering.LDAModel;
 import org.apache.spark.ml.linalg.Vector;
 import org.apache.spark.ml.stat.Summarizer;
 import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 
@@ -70,6 +71,16 @@ public class JavaLDAExample {
         table.show();
         table = table.join(input.groupBy().agg(Summarizer.mean(col("topicDistribution"))));
         table.show();
+        table.map(row -> {
+            double v = row.get(row.fieldIndex("topicDistribution"))
+                    .dot(row.get(row.fieldIndex("mean(topicDistribution)")));
+            v = v / Math.sqrt(row.get(row.fieldIndex("topicDistribution"))
+                    .dot(row.get(row.fieldIndex("topicDistribution"))));
+            v = v / Math.sqrt(row.get(row.fieldIndex("mean(topicDistribution)"))
+                    .dot(row.get(row.fieldIndex("mean(topicDistribution)"))));
+            return v;
+        }, Encoders.DOUBLE()).show();
+
 
 
 //        try {
