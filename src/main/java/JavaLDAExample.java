@@ -56,7 +56,8 @@ public class JavaLDAExample {
         input = transformed.join(input, "label");
         input.show(false);
         input.select("topicDistribution").foreach(v->System.out.println(v.fieldIndex("topicDistribution")));
-        input.select("topicDistribution").foreach(v->System.out.println(v.get(v.fieldIndex("topicDistribution"))));
+        input.select("topicDistribution").foreach(v->System.out.println(v.getAs("topicDistribution").getClass()));
+        input.select("topicDistribution").foreach(v->System.out.println((char[]) v.getAs("topicDistribution")));
 
 
 
