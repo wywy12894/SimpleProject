@@ -1,4 +1,5 @@
 // $example on$
+import org.apache.spark.ml.clustering.DistributedLDAModel;
 import org.apache.spark.ml.clustering.LDA;
 import org.apache.spark.ml.clustering.LDAModel;
 import org.apache.spark.sql.Dataset;

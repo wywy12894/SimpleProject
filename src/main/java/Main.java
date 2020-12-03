@@ -1,6 +1,7 @@
 import org.apache.spark.ml.clustering.DistributedLDAModel;
 import org.apache.spark.ml.clustering.LDA;
 import org.apache.spark.ml.clustering.LDAModel;
+import org.apache.spark.ml.clustering.LocalLDAModel;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
@@ -16,7 +17,7 @@ public class Main {
                 .getOrCreate();
 
         // Load a LDA model.
-        LDAModel model = DistributedLDAModel.load("/usr/project/SimpleProject/model/LDAmodel2");
+        LDAModel model = LocalLDAModel.load("/usr/project/SimpleProject/model/LDAmodel2");
 
 
         // Describe topics.
