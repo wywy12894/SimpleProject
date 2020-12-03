@@ -73,10 +73,10 @@ public class JavaLDAExample {
         table = table.join(input.groupBy().agg(Summarizer.mean(col("topicDistribution"))));
         table.show();
 
-        
+
         spark.udf().register("dot_func", (UDF2<DenseVector, DenseVector, Object>) BLAS::dot, DataTypes.DoubleType);
         table.withColumn("dot",
-                functions.callUDF("dot_func", col("topicDistribution"), col("mean(Distribution)")))
+                functions.callUDF("dot_func", col("topicDistribution"), col("mean(topicDistribution)")))
                 .show();
 //        table.map(row -> {
 //            Vector v1 = (DenseVector) row.get(row.fieldIndex("topicDistribution"));
