@@ -4,6 +4,8 @@ import org.apache.spark.ml.clustering.LDAModel;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
+
+import java.io.IOException;
 // $example off$
 
 /**
@@ -25,7 +27,7 @@ public class JavaLDAExample {
         // $example on$
         // Loads data.
         Dataset<Row> dataset = spark.read().format("libsvm")
-                .load("/usr/project/SimpleProject/sample_lda_libsvm_data.txt");
+                .load("/usr/project/SimpleProject/data/sample_lda_libsvm_data.txt");
 
         // Trains a LDA model.
         LDA lda = new LDA().setK(10).setMaxIter(10);
