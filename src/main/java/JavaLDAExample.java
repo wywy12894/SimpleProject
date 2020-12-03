@@ -2,6 +2,7 @@
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.ml.clustering.LDA;
 import org.apache.spark.ml.clustering.LDAModel;
+import org.apache.spark.sql.Column;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
@@ -55,6 +56,7 @@ public class JavaLDAExample {
                 .load("/usr/project/SimpleProject/data/input.txt");
         input = transformed.join(input, "label");
         input.show(false);
+        input.select("topicDistribution").foreach(System.out::println);
 
 
 
