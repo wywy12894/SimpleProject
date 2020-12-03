@@ -46,11 +46,14 @@ public class JavaLDAExample {
 
         // Shows the result.
         Dataset<Row> transformed = model.transform(dataset);
+        transformed.printSchema();
+        transformed.drop("features");
         transformed.show(false);
         // $example off$
+        transformed.printSchema();
 
         try {
-            model.save("/usr/project/SimpleProject/model/LDAmodel2");
+            model.write().overwrite().save("/usr/project/SimpleProject/model/LDAmodel2");
             transformed.write().parquet("/usr/project/SimpleProject/model/docRepresentation.parquet");
         } catch (IOException e) {
             e.printStackTrace();
