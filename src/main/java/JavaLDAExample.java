@@ -48,6 +48,13 @@ public class JavaLDAExample {
         transformed.show(false);
         // $example off$
 
+        try {
+            model.save("/usr/project/SimpleProject/model/LDAmodel2");
+            transformed.write().parquet("/usr/project/SimpleProject/model/docRepresentation.parquet");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         spark.stop();
     }
 }
