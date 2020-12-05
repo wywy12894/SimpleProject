@@ -60,27 +60,27 @@ public class JavaLDAExample {
         // $example off$
         transformed.printSchema();
 
-//        Dataset<Row> input = spark.read().format("libsvm")
-//                .load("/usr/project/SimpleProject/data/input.txt");
-//        input = transformed.join(input, "label").drop("features");
-//        input.show(false);
-//        input.select("topicDistribution").foreach(v->System.out.println(v.fieldIndex("topicDistribution")));
-//        input.select("topicDistribution").foreach(v->System.out.println(v.getAs("topicDistribution").getClass()));
-//        input.agg(avg("label")).show();
-//
-//        input.groupBy().agg(Summarizer.mean(col("topicDistribution"))).show();
-//
-//        Dataset<Row> table= transformed.except(input);
-//        table.show();
-//        table = table.join(input.groupBy().agg(Summarizer.mean(col("topicDistribution"))));
-//        table.show();
-//
-//        spark.udf().register("cos_func",
-//                (Vector v1, Vector v2)-> BLAS.dot(v1, v2)/(Math.sqrt(BLAS.dot(v1,v1))*Math.sqrt(BLAS.dot(v2,v2))),
-//                DataTypes.DoubleType);
-//        table.withColumn("cosine",
-//                functions.callUDF("cos_func", col("topicDistribution"), col("mean(topicDistribution)")))
-//                .show();
+        Dataset<Row> input = spark.read().format("libsvm")
+                .load("/usr/project/SimpleProject/data/input.txt");
+        input = transformed.join(input, "label").drop("features");
+        input.show(false);
+        input.select("topicDistribution").foreach(v->System.out.println(v.fieldIndex("topicDistribution")));
+        input.select("topicDistribution").foreach(v->System.out.println(v.getAs("topicDistribution").getClass()));
+        input.agg(avg("label")).show();
+
+        input.groupBy().agg(Summarizer.mean(col("topicDistribution"))).show();
+
+        Dataset<Row> table= transformed.except(input);
+        table.show();
+        table = table.join(input.groupBy().agg(Summarizer.mean(col("topicDistribution"))));
+        table.show();
+
+        spark.udf().register("cos_func",
+                (Vector v1, Vector v2)-> BLAS.dot(v1, v2)/(Math.sqrt(BLAS.dot(v1,v1))*Math.sqrt(BLAS.dot(v2,v2))),
+                DataTypes.DoubleType);
+        table.withColumn("cosine",
+                functions.callUDF("cos_func", col("topicDistribution"), col("mean(topicDistribution)")))
+                .show();
 
 
 
