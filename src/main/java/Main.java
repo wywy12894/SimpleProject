@@ -38,8 +38,9 @@ public class Main {
                 DataTypes.DoubleType);
         documents = documents.withColumn("cosine",
                 functions.callUDF("cos_func", col("topicDistribution"), col("mean(topicDistribution)")));
+        documents.show();
         // sort by cosine distance
-        documents.sort(col("cosine")).limit(5).show();
+        documents.sort(col("cosine").desc()).limit(5).show();
 
 
 
