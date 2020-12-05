@@ -35,7 +35,7 @@ public class WeiboTxt2Parquet {
                 .getOrCreate();
 
         JavaRDD<Weibo> weiboRDD = spark.read()
-                .textFile("examples/src/main/resources/people.txt")
+                .textFile("/usr/project/SimpleProject/rootcontent.txt")
                 .javaRDD()
                 .map(line -> {
                     String[] parts = line.split("\t");
