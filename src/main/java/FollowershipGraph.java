@@ -31,8 +31,10 @@ public class FollowershipGraph {
         Graph<String,String> followGraph = Graph.fromEdges(edgeRDD, "", StorageLevel.MEMORY_ONLY(),
                 StorageLevel.MEMORY_ONLY(), stringTag, stringTag);
 
+        System.out.println("+++++++++++++++++++++++++++++++++++++");
         List<Edge<String>> e = followGraph.edges().toJavaRDD().collect();
         System.out.println(e);
+        System.out.println("=====================================");
 
         spark.stop();
     }
