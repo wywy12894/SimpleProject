@@ -40,8 +40,14 @@ public class Main {
                 functions.callUDF("cos_func", col("topicDistribution"), col("mean(topicDistribution)")));
         documents.show();
         // sort by cosine distance
-        documents.sort(col("cosine").desc()).limit(5).show();
+        Dataset<Row> output = documents.sort(col("cosine").desc()).limit(5);
+        output.show(false);
 
+        // Load original weibo content
+        Dataset<Row> rootcontent = spark.read().parquet("/usr/project/SimpleProject/model/rootContent.parquet");
+        output = output.join(rootcontent);
+        output.show();
+        output.write().json("/usr/project/SimpleProject/data/output.json");
 
 
         spark.stop();
