@@ -62,7 +62,7 @@ public final class JavaPageRank {
         JavaPairRDD<String, Double> ranks = links.mapValues(rs -> 1.0);
 
         // Calculates and updates URL ranks continuously using PageRank algorithm.
-        for (int current = 0; current < Integer.parseInt(args[1]); current++) {
+        for (int current = 0; current < 20; current++) {
             // Calculates URL contributions to the rank of other URLs.
             JavaPairRDD<String, Double> contribs = links.join(ranks).values()
                     .flatMapToPair(s -> {
