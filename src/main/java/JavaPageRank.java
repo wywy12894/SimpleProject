@@ -31,14 +31,6 @@ import org.apache.spark.sql.SparkSession;
 public final class JavaPageRank {
     private static final Pattern SPACES = Pattern.compile("\\s+");
 
-    static void showWarning() {
-        String warning = "WARN: This is a naive implementation of PageRank " +
-                "and is given as an example! \n" +
-                "Please use the PageRank implementation found in " +
-                "org.apache.spark.graphx.lib.PageRank for more conventional use.";
-        System.err.println(warning);
-    }
-
     private static class Sum implements Function2<Double, Double, Double> {
         @Override
         public Double call(Double a, Double b) {
@@ -47,12 +39,6 @@ public final class JavaPageRank {
     }
 
     public static void main(String[] args) throws Exception {
-        if (args.length < 2) {
-            System.err.println("Usage: JavaPageRank <file> <number_of_iterations>");
-            System.exit(1);
-        }
-
-        showWarning();
 
         SparkSession spark = SparkSession
                 .builder()
@@ -64,7 +50,7 @@ public final class JavaPageRank {
         //     URL         neighbor URL
         //     URL         neighbor URL
         //     ...
-        JavaRDD<String> lines = spark.read().textFile(args[0]).javaRDD();
+        JavaRDD<String> lines = spark.read().textFile("hdfs://hadoop-node1:9000/data/followship.txt").javaRDD();
 
         // Loads all URLs from input file and initialize their neighbors.
         JavaPairRDD<String, Iterable<String>> links = lines.mapToPair(s -> {
@@ -92,9 +78,17 @@ public final class JavaPageRank {
             ranks = contribs.reduceByKey(new Sum()).mapValues(sum -> 0.15 + sum * 0.85);
         }
 
+        JavaPairRDD<Double, String> result = ranks
+                .mapToPair(row->new Tuple2<Double, String>(row._2, row._1))
+                .sortByKey(false);
+
+        int index = 0;
         // Collects all URL ranks and dump them to console.
         List<Tuple2<String, Double>> output = ranks.collect();
         for (Tuple2<?,?> tuple : output) {
+            if(index > 10)
+                break;
+            index++;
             System.out.println(tuple._1() + " has rank: " + tuple._2() + ".");
         }
 
