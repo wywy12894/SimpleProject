@@ -1,9 +1,12 @@
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.graphx.Edge;
 import org.apache.spark.graphx.Graph;
+import org.apache.spark.graphx.VertexRDD;
+import org.apache.spark.graphx.lib.LabelPropagation;
 import org.apache.spark.rdd.RDD;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.storage.StorageLevel;
+import scala.Tuple2;
 import scala.reflect.ClassTag;
 
 import java.util.List;
@@ -30,11 +33,18 @@ public class FollowershipGraph {
 
         Graph<String,String> followGraph = Graph.fromEdges(edgeRDD, "", StorageLevel.MEMORY_ONLY(),
                 StorageLevel.MEMORY_ONLY(), stringTag, stringTag);
+        Graph<Object,String> result = LabelPropagation.run(followGraph, 10, stringTag);
 
-//        System.out.println("+++++++++++++++++++++++++++++++++++++");
-//        List<Edge<String>> e = followGraph.edges().toJavaRDD().collect();
-//        System.out.println(e);
-//        System.out.println("=====================================");
+
+        System.out.println("+++++++++++++++++++++++++++++++++++++");
+        List<Edge<String>> e = followGraph.edges().toJavaRDD().collect();
+        System.out.println(e);
+        e = result.edges().toJavaRDD().collect();
+        System.out.println(e);
+        VertexRDD<Object> v = result.vertices();
+        List<Tuple2<Object, Object>> sth =v.toJavaRDD().collect();
+        System.out.println(sth);
+        System.out.println("=====================================");
 
         spark.stop();
     }
