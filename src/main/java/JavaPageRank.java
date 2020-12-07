@@ -84,12 +84,12 @@ public final class JavaPageRank {
 
         int index = 0;
         // Collects all URL ranks and dump them to console.
-        List<Tuple2<String, Double>> output = ranks.collect();
+        List<Tuple2<Double, String>> output = result.collect();
         for (Tuple2<?,?> tuple : output) {
             if(index > 10)
                 break;
             index++;
-            System.out.println(tuple._1() + " has rank: " + tuple._2() + ".");
+            System.out.println(tuple._2() + " has rank: " + tuple._1() + ".");
         }
 
         spark.stop();
