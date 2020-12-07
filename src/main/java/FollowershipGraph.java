@@ -34,17 +34,16 @@ public class FollowershipGraph {
 
         Graph<String,String> followGraph = Graph.fromEdges(edgeRDD, "", StorageLevel.MEMORY_ONLY(),
                 StorageLevel.MEMORY_ONLY(), stringTag, stringTag);
-//        Graph<Object,String> result = LabelPropagation.run(followGraph, 10, stringTag);
-        Graph<Object, Object> result = PageRank.run(followGraph, 50, 0.01, stringTag, stringTag);
+        Graph<Object,String> result2 = LabelPropagation.run(followGraph, 10, stringTag);
+        Graph<Object, Object> result1 = PageRank.run(followGraph, 50, 0.01, stringTag, stringTag);
 
 
         System.out.println("+++++++++++++++++++++++++++++++++++++");
-        List<Edge<Object>> e = result.edges().toJavaRDD().collect();
-        System.out.println(e);
-        VertexRDD<Object> v = result.vertices();
-        List<Tuple2<Object, Object>> sth =v.toJavaRDD().collect();
+        JavaRDD<Tuple2<Object, Object>> v = result1.vertices().toJavaRDD();
+        //sortBy(tuple->tuple._2, false, 0);
+        List<Tuple2<Object, Object>> sth =v.top(10);
         System.out.println(sth);
-        System.out.println("=====================================");
+        System.out.println("+++++++++++++++++++++++++++++++++++++");
 
 //        System.out.println("+++++++++++++++++++++++++++++++++++++");
 //        List<Edge<String>> e = followGraph.edges().toJavaRDD().collect();
