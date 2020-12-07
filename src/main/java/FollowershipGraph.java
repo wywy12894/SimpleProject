@@ -39,9 +39,9 @@ public class FollowershipGraph {
 
 
         System.out.println("+++++++++++++++++++++++++++++++++++++");
-        JavaRDD<Tuple2<Object, Object>> v = result1.vertices().toJavaRDD();
-        //sortBy(tuple->tuple._2, false, 0);
-        List<Tuple2<Object, Object>> sth =v.top(10);
+        JavaRDD<Tuple2<Object, Object>> v = result1.vertices().toJavaRDD()
+                .sortBy(tuple->tuple._2, false, 0);
+        List<Tuple2<Object, Object>> sth =v.collect();
         System.out.println(sth);
         System.out.println("+++++++++++++++++++++++++++++++++++++");
 
