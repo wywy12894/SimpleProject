@@ -10,7 +10,9 @@ import org.apache.spark.storage.StorageLevel;
 import scala.Tuple2;
 import scala.reflect.ClassTag;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class FollowershipGraph {
     public static void main(String[] args){
@@ -45,15 +47,20 @@ public class FollowershipGraph {
         System.out.println(sth);
         System.out.println("+++++++++++++++++++++++++++++++++++++");
 
-//        System.out.println("+++++++++++++++++++++++++++++++++++++");
-//        List<Edge<String>> e = followGraph.edges().toJavaRDD().collect();
-//        System.out.println(e);
-//        e = result.edges().toJavaRDD().collect();
-//        System.out.println(e);
-//        VertexRDD<Object> v = result.vertices();
-//        List<Tuple2<Object, Object>> sth =v.toJavaRDD().collect();
-//        System.out.println(sth);
-//        System.out.println("=====================================");
+        System.out.println("=====================================");
+
+        int query = 4;
+        int querylabel = (int)result2.vertices().toJavaRDD().filter(tuple->(int)tuple._1() == query).first()._2;
+        JavaRDD<Edge<String>> edges = edgeJavaRDD.filter(edge->edge.srcId() == query);
+        Set<Integer> neighbors = new HashSet<>();
+        edges.foreach(edge->{
+            neighbors.add((int) edge.dstId());
+        });
+        List<Tuple2<Object, Object>> res = result2.vertices().toJavaRDD()
+                .filter(tuple->(int)tuple._2() == querylabel)
+                .filter(tuple-> ! neighbors.contains((int)tuple._1())).collect();
+        System.out.println(res);
+        System.out.println("=====================================");
 
         spark.stop();
     }
