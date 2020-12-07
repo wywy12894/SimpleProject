@@ -49,16 +49,16 @@ public class FollowershipGraph {
 
         System.out.println("=====================================");
 
-        int query = 4;
-        int querylabel = (int)result2.vertices().toJavaRDD().filter(tuple->(int)tuple._1() == query).first()._2;
+        long query = 4;
+        long querylabel = (long)result2.vertices().toJavaRDD().filter(tuple->(long)tuple._1() == query).first()._2;
         JavaRDD<Edge<String>> edges = edgeJavaRDD.filter(edge->edge.srcId() == query);
-        Set<Integer> neighbors = new HashSet<>();
+        Set<Long> neighbors = new HashSet<>();
         edges.foreach(edge->{
-            neighbors.add((int) edge.dstId());
+            neighbors.add(edge.dstId());
         });
         List<Tuple2<Object, Object>> res = result2.vertices().toJavaRDD()
-                .filter(tuple->(int)tuple._2() == querylabel)
-                .filter(tuple-> ! neighbors.contains((int)tuple._1())).collect();
+                .filter(tuple->(long)tuple._2() == querylabel)
+                .filter(tuple-> ! neighbors.contains((long)tuple._1())).collect();
         System.out.println(res);
         System.out.println("=====================================");
 
