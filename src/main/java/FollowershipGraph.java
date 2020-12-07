@@ -36,6 +36,7 @@ public class FollowershipGraph {
         Graph<Object,String> result = LabelPropagation.run(followGraph, 10, stringTag);
 
 
+
         System.out.println("+++++++++++++++++++++++++++++++++++++");
         List<Edge<String>> e = followGraph.edges().toJavaRDD().collect();
         System.out.println(e);

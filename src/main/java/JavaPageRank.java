@@ -50,7 +50,7 @@ public final class JavaPageRank {
         //     URL         neighbor URL
         //     URL         neighbor URL
         //     ...
-        JavaRDD<String> lines = spark.read().textFile("hdfs://hadoop-node1:9000/data/followship.txt").javaRDD();
+        JavaRDD<String> lines = spark.read().textFile("./data/followship.txt").javaRDD();
 
         // Loads all URLs from input file and initialize their neighbors.
         JavaPairRDD<String, Iterable<String>> links = lines.mapToPair(s -> {
