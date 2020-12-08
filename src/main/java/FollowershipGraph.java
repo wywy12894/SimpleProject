@@ -37,7 +37,7 @@ public class FollowershipGraph {
         Graph<String,String> followGraph = Graph.fromEdges(edgeRDD, "", StorageLevel.MEMORY_ONLY(),
                 StorageLevel.MEMORY_ONLY(), stringTag, stringTag);
         Graph<Object,String> result2 = LabelPropagation.run(followGraph, 10, stringTag);
-        Graph<Object, Object> result1 = PageRank.run(followGraph, 50, 0.01, stringTag, stringTag);
+        Graph<Object,Object> result1 = PageRank.run(followGraph, 50, 0.01, stringTag, stringTag);
 
 
         System.out.println("+++++++++++++++++++++++++++++++++++++");
@@ -53,14 +53,14 @@ public class FollowershipGraph {
         long querylabel = (long)result2.vertices().toJavaRDD().filter(tuple->(long)tuple._1() == query).first()._2;
         JavaRDD<Edge<String>> edges = edgeJavaRDD.filter(edge->edge.srcId() == query);
         Set<Long> neighbors = new HashSet<>();
-        edges.foreach(edge->{
-            neighbors.add(edge.dstId());
-        });
+        neighbors.add(query);
+        edges.foreach(edge-> neighbors.add(edge.dstId()));
         List<Tuple2<Object, Object>> res = result2.vertices().toJavaRDD()
                 .filter(tuple->(long)tuple._2() == querylabel)
                 .filter(tuple-> ! neighbors.contains((long)tuple._1())).collect();
         System.out.println(res);
         System.out.println("=====================================");
+
 
         spark.stop();
     }

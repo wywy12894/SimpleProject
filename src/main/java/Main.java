@@ -24,31 +24,9 @@ public class Main {
                 .appName("Main")
                 .getOrCreate();
 
-        // Load document vector
-        Dataset<Row> documents = spark.read().parquet("/usr/project/SimpleProject/model/docRepresentation.parquet");
-        // Load input
-        Dataset<Row> input = spark.read().format("libsvm").load("/usr/project/SimpleProject/data/input.txt");
-        // input vector
-        input = documents.join(input,"label").drop("features");
-        // other documents
-        documents = documents.except(input).join(input.groupBy().agg(Summarizer.mean(col("topicDistribution"))));
-        // cosine distance
-        spark.udf().register("cos_func",
-                (Vector v1, Vector v2)-> BLAS.dot(v1, v2)/(Math.sqrt(BLAS.dot(v1,v1))*Math.sqrt(BLAS.dot(v2,v2))),
-                DataTypes.DoubleType);
-        documents = documents.withColumn("cosine",
-                functions.callUDF("cos_func", col("topicDistribution"), col("mean(topicDistribution)")));
-        documents.show();
-        // sort by cosine distance
-        Dataset<Row> output = documents.sort(col("cosine").desc()).limit(5);
-        output.show(false);
-
-        // Load original weibo content
-        Dataset<Row> rootcontent = spark.read().parquet("/usr/project/SimpleProject/model/rootContent.parquet");
-        output = output.join(rootcontent);
-        output.show();
-        output.write().json("/usr/project/SimpleProject/data/output.json");
-
+        System.out.println("++++++++++++++++++++++++++++++");
+        System.out.println("sucess!");
+        System.out.println("++++++++++++++++++++++++++++++");
 
         spark.stop();
     }
